@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ILisiting {
   vehicle_type: string;
@@ -33,6 +33,16 @@ export default function Home() {
   });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640); // Tailwind sm breakpoint
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -46,28 +56,30 @@ export default function Home() {
           <Link href="/">
             <span className="text-xl font-bold text-blue-600">MotoG</span>
           </Link>
-          <nav className="hidden sm:flex gap-6 text-sm font-medium">
-            <Link href="/sell" className="hover:text-blue-600">Sell</Link>
-            <Link href="/inventory" className="hover:text-blue-600">Buy</Link>
-            <Link href="/about" className="hover:text-blue-600">About</Link>
-            <Link href="/tips" className="hover:text-blue-600">Tips & Advice</Link>
-            <Link href="/login" className="hover:text-blue-600">Login</Link>
-            <Link href="/signup" className="hover:text-blue-600">Signup</Link>
-          </nav>
-          <div className="sm:hidden">
+          {!isMobile && (
+            <nav className="flex gap-6 text-sm font-medium">
+              <Link href="/sell" className="hover:text-blue-600">Sell</Link>
+              <Link href="/inventory" className="hover:text-blue-600">Buy</Link>
+              <Link href="/about" className="hover:text-blue-600">About</Link>
+              <Link href="/tips" className="hover:text-blue-600">Tips & Advice</Link>
+              <Link href="/login" className="hover:text-blue-600">Login</Link>
+              <Link href="/signup" className="hover:text-blue-600">Signup</Link>
+            </nav>
+          )}
+          {isMobile && (
             <button
               onClick={toggleMobileMenu}
               className="text-white bg-blue-600 font-bold px-3 py-1 rounded-md text-lg"
             >
               {mobileMenuOpen ? 'X' : 'M'}
             </button>
-          </div>
+          )}
         </div>
       </header>
 
       {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed top-16 left-0 w-full bg-white z-30 shadow-md border-t border-gray-200 px-6 py-6 space-y-4 text-center sm:hidden">
+      {mobileMenuOpen && isMobile && (
+        <div className="fixed top-16 left-0 w-full bg-white z-30 shadow-md border-t border-gray-200 px-6 py-6 space-y-4 text-center">
           <Link href="/sell" className="block text-lg font-medium text-gray-800 hover:text-blue-600" onClick={toggleMobileMenu}>Sell Car</Link>
           <Link href="/inventory" className="block text-lg font-medium text-gray-800 hover:text-blue-600" onClick={toggleMobileMenu}>Buy Car</Link>
           <Link href="/about" className="block text-lg font-medium text-gray-800 hover:text-blue-600" onClick={toggleMobileMenu}>About</Link>
@@ -94,4 +106,90 @@ export default function Home() {
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 SELL NOW @ EASE
               </h1>
-              <p c
+              <p className="text-base sm:text-lg text-gray-700 mb-6 font-medium">
+                Free Listing & Buying for Lifetime
+              </p>
+              <div className="flex flex-col gap-3">
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white py-4 text-base font-bold"
+                  asChild
+                >
+                  <Link href="/sell">List Your Vehicle</Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-white hover:bg-gray-50 text-gray-900 py-4 text-base font-bold border-gray-300"
+                  asChild
+                >
+                  <Link href="/inventory">Browse Inventory</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="absolute bottom-4 right-4 w-32 sm:w-40 md:w-56 lg:w-64">
+          <Image
+            src="/images/featured-car.png"
+            alt="Featured car"
+            width={300}
+            height={200}
+            className="object-contain"
+          />
+        </div>
+      </section>
+
+      {/* Listings */}
+      <section className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">Featured Vehicles</h2>
+          <p className="text-muted-foreground text-base">Latest listings this week</p>
+        </div>
+
+        {data && data.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {data.map((car) => (
+              <Card
+                key={car.id}
+                className="hover:shadow-xl transition-all overflow-hidden group rounded-lg"
+              >
+                <div className="relative h-40 sm:h-56">
+                  <Image
+                    src={car.images[0]}
+                    alt={car.images[0]}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">{car.vehicle_type}</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <span className="text-blue-600 font-semibold text-base">
+                      ${car.price.toLocaleString()}
+                    </span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm">
+                    <p>{car.city}</p>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full text-sm" variant="outline">
+                    View Details
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No vehicles available at the moment</p>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
