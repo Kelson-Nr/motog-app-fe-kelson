@@ -38,14 +38,6 @@ export default function Home() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  useEffect(() => {
-    const closeOnEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMobileMenuOpen(false);
-    };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -56,30 +48,31 @@ export default function Home() {
           </Link>
           <nav className="hidden sm:flex gap-6 text-sm font-medium">
             <Link href="/sell" className="hover:text-blue-600">Sell</Link>
-            <Link href="/inventory" className="hover:text-blue-600">Browse</Link>
+            <Link href="/inventory" className="hover:text-blue-600">Buy</Link>
+            <Link href="/about" className="hover:text-blue-600">About</Link>
+            <Link href="/tips" className="hover:text-blue-600">Tips & Advice</Link>
             <Link href="/login" className="hover:text-blue-600">Login</Link>
             <Link href="/signup" className="hover:text-blue-600">Signup</Link>
           </nav>
           <div className="sm:hidden">
             <button
               onClick={toggleMobileMenu}
-              className="text-blue-600 focus:outline-none"
-              aria-label="Toggle menu"
+              className="text-white bg-blue-600 font-bold px-3 py-1 rounded-md"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5M3.75 12h16.5m-16.5 6.75h16.5" />
-              </svg>
+              {mobileMenuOpen ? 'X' : 'M'}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="sm:hidden bg-white border-t border-gray-200 px-4 py-4 space-y-3">
-            <Link href="/sell" className="block text-sm font-medium hover:text-blue-600">Sell</Link>
-            <Link href="/inventory" className="block text-sm font-medium hover:text-blue-600">Browse</Link>
-            <Link href="/login" className="block text-sm font-medium hover:text-blue-600">Login</Link>
-            <Link href="/signup" className="block text-sm font-medium hover:text-blue-600">Signup</Link>
+          <div className="sm:hidden bg-white border-t border-gray-200 px-4 py-4 space-y-3 text-center">
+            <Link href="/sell" className="block text-base font-medium hover:text-blue-600">Sell Car</Link>
+            <Link href="/inventory" className="block text-base font-medium hover:text-blue-600">Buy Car</Link>
+            <Link href="/about" className="block text-base font-medium hover:text-blue-600">About</Link>
+            <Link href="/tips" className="block text-base font-medium hover:text-blue-600">Tips & Advices</Link>
+            <Link href="/login" className="block text-base font-medium hover:text-blue-600">Login</Link>
+            <Link href="/signup" className="block text-base font-medium hover:text-blue-600">Signup</Link>
           </div>
         )}
       </header>
