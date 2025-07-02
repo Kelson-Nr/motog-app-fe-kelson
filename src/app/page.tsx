@@ -33,8 +33,45 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section with Custom Backdrop */}
-      <section className="mt-16 sm:mt-20 relative w-full h-[250px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
+      {/* Responsive Mobile Menu Button (Example Placeholder for Actual Nav) */}
+      <header className="fixed top-0 left-0 w-full bg-white z-30 shadow-sm">
+        <div className="container mx-auto flex justify-between items-center px-4 py-3 sm:py-4">
+          <Link href="/">
+            <span className="text-xl font-bold text-blue-600">MotoG</span>
+          </Link>
+          <nav className="hidden sm:flex gap-4 text-sm font-medium">
+            <Link href="/sell" className="hover:text-blue-600">Sell</Link>
+            <Link href="/inventory" className="hover:text-blue-600">Browse</Link>
+          </nav>
+          <div className="sm:hidden">
+            <button id="menu-toggle" className="text-blue-600 focus:outline-none">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 5.25h16.5M3.75 12h16.5m-16.5 6.75h16.5"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div id="mobile-menu" className="hidden sm:hidden bg-white border-t border-gray-200">
+          <div className="flex flex-col px-4 py-2">
+            <Link href="/sell" className="py-2 text-sm font-medium hover:text-blue-600">Sell</Link>
+            <Link href="/inventory" className="py-2 text-sm font-medium hover:text-blue-600">Browse</Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="pt-24 sm:pt-28 relative w-full h-[250px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
         <Image
           src="/images/hero-background.png"
           alt="Car marketplace backdrop"
@@ -44,7 +81,6 @@ export default function Home() {
           quality={100}
         />
 
-        {/* Card Overlay Responsive */}
         <div className="relative z-20 container mx-auto px-4 flex items-center sm:flex-row sm:gap-8 sm:justify-start sm:h-full sm:pl-8 sm:pr-4 flex-col">
           <Card className="max-w-md bg-white/90 backdrop-blur-sm border-0 shadow-lg sm:mb-0 mb-6">
             <CardContent className="p-6 sm:p-8">
@@ -54,7 +90,6 @@ export default function Home() {
               <p className="text-base sm:text-lg text-gray-700 mb-6 font-medium">
                 Free Listing & Buying for Lifetime
               </p>
-
               <div className="flex flex-col gap-3">
                 <Button
                   size="lg"
@@ -76,7 +111,6 @@ export default function Home() {
           </Card>
         </div>
 
-        {/* Car Image Overlay */}
         <div className="absolute bottom-4 right-4 w-32 sm:w-40 md:w-56 lg:w-64">
           <Image
             src="/images/featured-car.png"
@@ -88,7 +122,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Car Listings */}
+      {/* Listings */}
       <section className="container mx-auto px-4 py-8 sm:py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold mb-2">Featured Vehicles</h2>
@@ -137,6 +171,20 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      {/* Mobile Menu Toggle Script */}
+      <script>
+        {`
+          document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('menu-toggle');
+            const menu = document.getElementById('mobile-menu');
+            toggle?.addEventListener('click', () => {
+              menu.classList.toggle('hidden');
+            });
+          });
+        `}
+      </script>
     </div>
   );
 }
+
