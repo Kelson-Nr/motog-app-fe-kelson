@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 interface ILisiting {
   vehicle_type: string;
@@ -31,43 +32,56 @@ export default function Home() {
     queryFn: () => axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/listings`),
   });
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  useEffect(() => {
+    const closeOnEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Responsive Mobile Menu Button (Example Placeholder for Actual Nav) */}
+      {/* Header */}
       <header className="fixed top-0 left-0 w-full bg-white z-30 shadow-sm">
         <div className="container mx-auto flex justify-between items-center px-4 py-3 sm:py-4">
           <Link href="/">
             <span className="text-xl font-bold text-blue-600">MotoG</span>
           </Link>
-          <nav className="hidden sm:flex gap-4 text-sm font-medium">
+          <nav className="hidden sm:flex gap-6 text-sm font-medium">
             <Link href="/sell" className="hover:text-blue-600">Sell</Link>
             <Link href="/inventory" className="hover:text-blue-600">Browse</Link>
+            <Link href="/login" className="hover:text-blue-600">Login</Link>
+            <Link href="/signup" className="hover:text-blue-600">Signup</Link>
           </nav>
           <div className="sm:hidden">
-            <button id="menu-toggle" className="text-blue-600 focus:outline-none">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 5.25h16.5M3.75 12h16.5m-16.5 6.75h16.5"
-                />
+            <button
+              onClick={toggleMobileMenu}
+              className="text-blue-600 focus:outline-none"
+              aria-label="Toggle menu"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5M3.75 12h16.5m-16.5 6.75h16.5" />
               </svg>
             </button>
           </div>
         </div>
-        <div id="mobile-menu" className="hidden sm:hidden bg-white border-t border-gray-200">
-          <div className="flex flex-col px-4 py-2">
-            <Link href="/sell" className="py-2 text-sm font-medium hover:text-blue-600">Sell</Link>
-            <Link href="/inventory" className="py-2 text-sm font-medium hover:text-blue-600">Browse</Link>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="sm:hidden bg-white border-t border-gray-200 px-4 py-4 space-y-3">
+            <Link href="/sell" className="block text-sm font-medium hover:text-blue-600">Sell</Link>
+            <Link href="/inventory" className="block text-sm font-medium hover:text-blue-600">Browse</Link>
+            <Link href="/login" className="block text-sm font-medium hover:text-blue-600">Login</Link>
+            <Link href="/signup" className="block text-sm font-medium hover:text-blue-600">Signup</Link>
           </div>
-        </div>
+        )}
       </header>
 
       {/* Hero Section */}
@@ -171,20 +185,6 @@ export default function Home() {
           </div>
         )}
       </section>
-
-      {/* Mobile Menu Toggle Script */}
-      <script>
-        {`
-          document.addEventListener('DOMContentLoaded', function () {
-            const toggle = document.getElementById('menu-toggle');
-            const menu = document.getElementById('mobile-menu');
-            toggle?.addEventListener('click', () => {
-              menu.classList.toggle('hidden');
-            });
-          });
-        `}
-      </script>
     </div>
   );
 }
-
